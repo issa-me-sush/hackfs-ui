@@ -73,7 +73,7 @@ const Contribute = () => {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const contract = new ethers.Contract(RESEARCHADDR, RESEARCHABI, signer);
-            const PARTICIPANT_ADDRESS = "0x..."; // Update this with the actual participant address
+            
 
             try {
                 const transaction = await contract.distributeLabCoin(researchId, address);
@@ -103,7 +103,7 @@ const Contribute = () => {
                         <div key={index} className="bg-white/30 backdrop-blur-lg shadow-lg rounded-lg p-6 border border-gray-200/30 relative">
                             <h2 className="text-2xl font-bold text-gray-800">{research.title}</h2>
                             <p className="text-gray-600 mt-2">{research.description}</p>
-                            <p className="text-sm text-gray-500">Research Duration: {research.timeDuration} seconds</p>
+                            <p className="text-sm text-gray-500">Research Duration: {research.timeDuration} days</p>
                             <p className="text-sm text-gray-500">Researcher: {research.researcher}</p>
                             <p className="text-sm text-gray-500">Remaining Amount: Ξ{research.remainingAmount}</p>
                             <p className="text-sm text-gray-500">Max Contributions: Ξ{research.data.maxDataSetCount}</p>
