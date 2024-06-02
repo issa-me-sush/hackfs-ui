@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Toaster } from '@/components/ui/sonner';
 import { ethers } from 'ethers';
 import { toast } from "sonner"
+
 import {RESEARCHADDR , RESEARCHABI} from "../contract/abi"
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -18,56 +19,56 @@ const Register = () => {
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-// @ts-ignore
-const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-    //   @ts-ignore 
-        const { ethereum } = window;
-
-        if (ethereum) {
-            const provider = new ethers.providers.Web3Provider(ethereum);
-            const signer = provider.getSigner();
-            const researchContract = new ethers.Contract(RESEARCHADDR, RESEARCHABI, signer);
-
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        toast("trx being sent");
+        try {
+            const { ethereum } = window as any;
+    
+            if (ethereum) {
+                const provider = new ethers.providers.Web3Provider(ethereum);
+                const signer = provider.getSigner();
+                const researchContract = new ethers.Contract(RESEARCHADDR, RESEARCHABI, signer);
+    
+                const { title, description, formlink, spreadsheetid, sheetid, maxdatasetcount, timeduration, amount } = formData;
+    
+                const _sheetID = Number(sheetid);
+                const _maxDataSetCount = Number(maxdatasetcount);
+                const _timeDuration = Number(timeduration);
+                const _amount = ethers.utils.parseUnits(amount, 'ether');
+    
+                // Call the registerResearch function with all parameters
+                const transaction = await researchContract.registerResearch(
+                    title,
+                    description,
+                    formlink,
+                    spreadsheetid,
+                    _sheetID,
+                    _maxDataSetCount,
+                    _timeDuration,
+                    _amount
+                );
+                toast("trx pending, wait for success toast");
+                await transaction.wait(); // Wait for the transaction to be mined
+                toast("successfully registered!");
+                console.log("Research registered:", transaction);
+    
+            } else {
+                console.log('Ethereum object does not exist!');
+                toast("Ethereum object does not exist!");
+            }
+        } catch (error) {
+            console.error("Error submitting research:", error);
+            toast("Error submitting research!");
             
-            const { title, description, formlink, spreadsheetid, sheetid, maxdatasetcount, timeduration, amount } = formData;
-
-   
-            const _sheetID = Number(sheetid);
-            const _maxDataSetCount = Number(maxdatasetcount);
-            const _timeDuration = Number(timeduration);
-            const _amount = ethers.utils.parseEther(amount.toString()); // Convert amount to Ether
-
-            // Call the registerResearch function
-            const transaction = await researchContract.registerResearch(
-                title,
-                description,
-                formlink,
-                spreadsheetid,
-                _sheetID,
-                _maxDataSetCount,
-                _timeDuration,
-                { value: _amount }
-            );
-
-            await transaction.wait(); 
-            toast("successfully registered!")
-            console.log("Research registered:", transaction);
-            
-        } else {
-            console.log('Ethereum object does not exist!');
         }
-    } catch (error) {
-        console.error("Error submitting research:", error);
-        // Optionally, show an error message or handle the state
-    }
-};
+    };
+    
 
     return (
         <div className="flex justify-center items-center h-screen bg-gradient-to-r from-green-100 to-blue-100">
             <Toaster/>
+           
             <form onSubmit={handleSubmit} className="bg-white p-10 rounded-xl shadow-2xl w-full max-w-4xl space-y-6">
                 <h2 className="text-3xl font-bold text-center text-gray-700 mb-10">Research Registration Form</h2>
                 

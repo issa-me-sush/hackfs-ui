@@ -1,5 +1,5 @@
 // export const RESEARCHADDR = "0xD25dF631Be860128e4B8909424ba5C90443452f8"
-export const RESEARCHADDR = "0xD25dF631Be860128e4B8909424ba5C90443452f8"
+export const RESEARCHADDR = "0x8444933B3BEADc684146215BBF20fE5fbE785F51"
 export const LABCOINADDR = "0xb8c468321368fe8b367914d656b724e31CEe2708"
 
 export const RESEARCHABI = [
@@ -57,11 +57,16 @@ export const RESEARCHABI = [
 				"internalType": "uint256",
 				"name": "_timeDuration",
 				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
 			}
 		],
 		"name": "registerResearch",
 		"outputs": [],
-		"stateMutability": "payable",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -305,7 +310,6 @@ export const RESEARCHABI = [
 		"type": "function"
 	}
 ]
-
 export const LABCOINABI = [
 	{
 		"inputs": [
