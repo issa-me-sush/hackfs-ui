@@ -13,7 +13,7 @@ const Contribute = () => {
             // @ts-ignore 
             const { ethereum } = window;
             if (ethereum) {
-                const provider = new ethers.providers.Web3Provider(ethereum);
+                const provider = new ethers.providers.JsonRpcProvider("https://api.calibration.node.glif.io/rpc/v1");
                 const contract = new ethers.Contract(RESEARCHADDR, RESEARCHABI, provider);
                 try {
                     const researchCount = await contract.researchCounter();
