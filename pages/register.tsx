@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Toaster } from '@/components/ui/sonner';
 import { ethers } from 'ethers';
-// import toast from 'sonner'
+import { toast } from "sonner"
 import {RESEARCHADDR , RESEARCHABI} from "../contract/abi"
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -53,7 +53,7 @@ const handleSubmit = async (e) => {
             );
 
             await transaction.wait(); 
-
+            toast("successfully registered!")
             console.log("Research registered:", transaction);
             
         } else {

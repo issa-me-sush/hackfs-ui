@@ -1,25 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import Head from 'next/head';
-
-import {RESEARCHADDR , RESEARCHABI} from "../contract/abi"
+import { useAccount } from 'wagmi';
+import { RESEARCHADDR, RESEARCHABI } from "../contract/abi";
+import { toast } from 'sonner';
+interface ResearchData {
+    id: number;
+    title: string;
+    description: string;
+    timeDuration: string;
+    researcher: string;
+    remainingAmount: string;
+    data: {
+        researchID: number;
+        formLink: string;
+        spreadSheetID: string;
+        sheetID: number;
+        maxDataSetCount: number;
+    };
+}
 
 const Contribute = () => {
-    const [researches, setResearches] = useState([]);
-    const [loading, setLoading] = useState(true);
-
+    const [researches, setResearches] = useState<ResearchData[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+  const {address} = useAccount();
     useEffect(() => {
         const fetchResearches = async () => {
-            // @ts-ignore 
-            const { ethereum } = window;
+            const { ethereum } = window as any;
             if (ethereum) {
-                const provider = new ethers.providers.JsonRpcProvider("https://api.calibration.node.glif.io/rpc/v1");
+                const provider = new ethers.providers.Web3Provider(ethereum);
                 const contract = new ethers.Contract(RESEARCHADDR, RESEARCHABI, provider);
                 try {
                     const researchCount = await contract.researchCounter();
-                    const researchesArray = [];
+                    const researchesArray: ResearchData[] = [];
                     
-                    for (let i = 1; i <= researchCount; i++) {
+                    for (let i = 1; i <= researchCount.toNumber(); i++) {
                         const research = await contract.researches(i);
                         researchesArray.push({
                             id: i,
@@ -37,7 +52,6 @@ const Contribute = () => {
                             }
                         });
                     }
-                              // @ts-ignore 
                     setResearches(researchesArray);
                     setLoading(false);
                 } catch (error) {
@@ -48,9 +62,28 @@ const Contribute = () => {
 
         fetchResearches();
     }, []);
-          // @ts-ignore 
-    const openLinkInNewTab = (url) => {
+
+    const openLinkInNewTab = (url: string): void => {
         window.open(url, '_blank', 'noopener,noreferrer');
+    };
+
+    const distributeTokens = async (researchId: number) => {
+        const { ethereum } = window as any;
+        if (ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const contract = new ethers.Contract(RESEARCHADDR, RESEARCHABI, signer);
+            const PARTICIPANT_ADDRESS = "0x..."; // Update this with the actual participant address
+
+            try {
+                const transaction = await contract.distributeLabCoin(researchId, address);
+                await transaction.wait();
+                console.log("Distribution successful!");
+                toast("successfully verified and reward distributed!")
+            } catch (error) {
+                console.error("Distribution failed:", error);
+            }
+        }
     };
 
     if (loading) {
@@ -68,19 +101,17 @@ const Contribute = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {researches.map((research, index) => (
                         <div key={index} className="bg-white/30 backdrop-blur-lg shadow-lg rounded-lg p-6 border border-gray-200/30 relative">
-                            {/* @ts-ignore  */}
                             <h2 className="text-2xl font-bold text-gray-800">{research.title}</h2>
-                               {/* @ts-ignore  */}
                             <p className="text-gray-600 mt-2">{research.description}</p>
-                               {/* @ts-ignore  */}
                             <p className="text-sm text-gray-500">Research Duration: {research.timeDuration} seconds</p>
-                               {/* @ts-ignore  */}
                             <p className="text-sm text-gray-500">Researcher: {research.researcher}</p>
-                               {/* @ts-ignore  */}
                             <p className="text-sm text-gray-500">Remaining Amount: Ξ{research.remainingAmount}</p>
-                               {/* @ts-ignore  */}
+                            <p className="text-sm text-gray-500">Max Contributions: Ξ{research.data.maxDataSetCount}</p>
                             <button onClick={() => openLinkInNewTab(research.data.formLink)} className="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded inline-block">
                                 Contribute
+                            </button>
+                            <button onClick={() => distributeTokens(research.id)} className="mt-4 bg-green-500 hover:bg-green-600 ml-2 text-white py-2 px-4 rounded inline-block">
+                                Verify Contribution
                             </button>
                         </div>
                     ))}
