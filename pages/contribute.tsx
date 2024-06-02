@@ -28,7 +28,7 @@ const Contribute = () => {
         const fetchResearches = async () => {
             const { ethereum } = window as any;
             if (ethereum) {
-                const provider = new ethers.providers.Web3Provider(ethereum);
+                const provider = new ethers.providers.JsonRpcProvider("https://rpc.ankr.com/filecoin_testnet");
                 const contract = new ethers.Contract(RESEARCHADDR, RESEARCHABI, provider);
                 try {
                     const researchCount = await contract.researchCounter();
