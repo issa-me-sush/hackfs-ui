@@ -1,5 +1,5 @@
 // export const RESEARCHADDR = "0xD25dF631Be860128e4B8909424ba5C90443452f8"
-export const RESEARCHADDR = "0x62C9A20A1844da480161E63c66376524222303dd"
+export const RESEARCHADDR = "0x157984a3CA9B888DE9007Db816bFfe504676bE30"
 export const LABCOINADDR = "0xb8c468321368fe8b367914d656b724e31CEe2708"
 
 export const RESEARCHABI = [
@@ -68,6 +68,19 @@ export const RESEARCHABI = [
       ],
       "name": "ResearchRegistered",
       "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "DECIMALS",
+      "outputs": [
+        {
+          "internalType": "uint8",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
     },
     {
       "inputs": [
@@ -179,7 +192,7 @@ export const RESEARCHABI = [
         },
         {
           "internalType": "uint256",
-          "name": "_amount",
+          "name": "_distributionAmoutInWhole",
           "type": "uint256"
         }
       ],

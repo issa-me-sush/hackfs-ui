@@ -35,8 +35,9 @@ const Register = () => {
                 const _sheetID = Number(sheetid);
                 const _maxDataSetCount = Number(maxdatasetcount);
                 const _timeDuration = Number(timeduration);
-                const _amount = ethers.utils.parseUnits(amount, 'ether');
+                // const _amount = ethers.utils.parseUnits(amount, 'ether');
     
+                 const _amount = amount;
                 // Call the registerResearch function with all parameters
                 const transaction = await researchContract.registerResearch(
                     title,
